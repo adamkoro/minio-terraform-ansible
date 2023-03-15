@@ -1,5 +1,14 @@
+# Minio root user
 MINIO_ROOT_USER="{{ minio_admin_username }}"
+
+# Minio root password
 MINIO_ROOT_PASSWORD="{{ minio_admin_password }}"
+
+# Minio data path to communicate with other minio servers
 MINIO_VOLUMES="http://{{ minio_host_prefix }}-{1...{{ groups['minio'] | length }}}.{{ minio_host_suffix }}:9000{{ minio_data_path }}"
+
+# Minio console port or custom configs
 MINIO_OPTS="--console-address :{{ minio_console_port }}"
+
+# Minio server url (loadbalancer url)
 MINIO_SERVER_URL="http://{{ minio_url }}"
