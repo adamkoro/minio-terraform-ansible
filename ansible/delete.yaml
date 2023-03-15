@@ -3,3 +3,9 @@
   become: true
   roles:
     - role: delete
+
+- hosts: loadbalancer
+  gather_facts: true
+  become: true
+  roles:
+    - role: delete
