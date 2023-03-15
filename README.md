@@ -70,7 +70,7 @@ terraform destroy
 
 #### Ansible
 
-- Run **ansible-playbook** to uninstall Minio and Nginx on the servers
+- Run **ansible-playbook** to uninstall Minio from the servers. **ONLY MINIO**
 
 ``` bash
 cd ansible
