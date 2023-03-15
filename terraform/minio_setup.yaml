@@ -1,0 +1,63 @@
+- name: Minio setup
+  hosts: all
+  remote_user: adamkoro
+  become: true
+  tasks:
+    ###############
+    ## swap disk
+    ###############
+    - name: Create a filesystem for swap
+      community.general.filesystem:
+        dev: /dev/vdb
+        fstype: swap
+        force: true
+      run_once: true
+
+    - name: Get swap disk UUID
+      ansible.builtin.shell: blkid -s UUID -o value /dev/vdb
+      register: uuid_swap
+      run_once: true
+
+    ###############
+    ## datastore disk
+    ###############
+    - name: Create a filesystem for datastore
+      community.general.filesystem:
+        dev: /dev/vdc
+        fstype: xfs
+        force: true
+      run_once: true
+
+    - name: Get swap disk UUID
+      ansible.builtin.shell: blkid -s UUID -o value /dev/vdc
+      register: uuid_datastore
+      run_once: true
+
+    ###############
+    ## mount created disks
+    ###############
+    - name: Add disks to fstab
+      blockinfile:
+        path: /etc/fstab
+        state: present
+        block: |
+          UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
+          UUID={{ uuid_datastore.stdout }} {{ minio_data_path }} xfs defaults 0 0
+      run_once: true
+
+    - name: Create directory for Minio data
+      file:
+        path: "{{ minio_data_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Enable swap
+      ansible.builtin.shell: swapon -a
+      run_once: true
+
+    - name: Mount disks
+      ansible.builtin.shell: mount -a
+      run_once: true
+
