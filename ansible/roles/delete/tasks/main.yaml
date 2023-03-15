@@ -1,38 +1,67 @@
-# Stop minion service
+# Stop minion service only on minio nodes
 - name: Stop and disable Minio
   systemd:
     name: minio
     daemon_reload: true
     state: stopped
     enabled: false
+  when: inventory_hostname in groups['minio']
 
-# Remove Minio user
+# Remove Minio user only on minio nodes
 - name: Remove Minio user
   user:
     name: minio-user
     state: absent
+  when: inventory_hostname in groups['minio']
 
-# Remove Minio group
+# Remove Minio group only on minio nodes
 - name: Remove Minio group
   group:
     name: minio-user
     state: absent
+  when: inventory_hostname in groups['minio']
 
-# Remove Minio binary
+# Remove Minio binary only on minio nodes
 - name: Remove Minio binary
   file:
     path: /usr/local/bin/minio
     state: absent
+  when: inventory_hostname in groups['minio']
 
-# Remove Minio config
+# Remove Minio config only on minio nodes
 - name: Remove Minio config
   file:
     path: /etc/default/minio
     state: absent
+  when: inventory_hostname in groups['minio']
 
-# Remove Minio service
+# Remove Minio service only on minio nodes
 - name: Remove Minio service
   file:
     path: /etc/systemd/system/minio.service
     state: absent
+  when: inventory_hostname in groups['minio']
 
+# Stop nginx service only on loadbalancer nodes
+- name: Stop and disable Nginx
+  systemd:
+    name: nginx
+    daemon_reload: true
+    state: stopped
+    enabled: false
+  when: inventory_hostname in groups['loadbalancer']
+
+# Remove Nginx config only on loadbalancer nodes
+- name: Remove Nginx config
+  file:
+    path: /etc/nginx/conf.d/minio.conf
+    state: absent
+  when: inventory_hostname in groups['loadbalancer']
+
+# Remove Nginx only on loadbalancer nodes
+- name: Remove packages
+  community.general.zypper:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - nginx
