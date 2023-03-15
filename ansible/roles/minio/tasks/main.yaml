@@ -1,13 +1,16 @@
-- name: Create minio group
+# Create Minio group
+- name: Create Minio group
   group:
     name: minio-user
 
-- name: Create minio user
+# Create Minio user
+- name: Create Minio user
   user:
     name: minio-user
     groups:
       - minio-user
 
+# Owner of Minio data
 - name: Change owner of Minio data
   file:
     path: "{{ minio_data_path }}"
@@ -16,6 +19,7 @@
     mode: '0755'
     recurse: true
 
+# Get Minio binary
 - name: Download Minio binary
   get_url:
     url: "{{ minio_download_url }}/minio"
@@ -24,6 +28,7 @@
     group: root
     mode: '0755'
 
+# Copy Minio config
 - name: Copy Minio config
   template:
     src: "minio.config.j2"
@@ -32,6 +37,7 @@
     group: minio-user
     mode: '0700'
 
+# Copy Minio service
 - name: Copy Minio service
   template:
     src: "minio.service.j2"
@@ -40,6 +46,7 @@
     group: root
     mode: '0755'
 
+# Start and enable Minio
 - name: Start and enable Minio
   systemd:
     name: minio
