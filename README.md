@@ -2,6 +2,12 @@
 
 Create Minio cluster easly with Terraform and Ansible
 
+## Original documentation
+
+- Minio cluster: https://min.io/docs/minio/linux/operations/install-deploy-manage/deploy-minio-multi-node-multi-drive.html
+- Nginx config: https://min.io/docs/minio/linux/integrations/setup-nginx-proxy-with-minio.html
+
+
 ## Requirements
 
 - Terraform
