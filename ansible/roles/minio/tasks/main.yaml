@@ -27,6 +27,8 @@
     owner: root
     group: root
     mode: '0755'
+  tags:
+    - update_minio
 
 # Copy Minio config
 - name: Copy Minio config
@@ -36,6 +38,9 @@
     owner: minio-user
     group: minio-user
     mode: '0700'
+  tags:
+    - update_config
+    - update_minio
 
 # Copy Minio service
 - name: Copy Minio service
@@ -45,11 +50,17 @@
     owner: root
     group: root
     mode: '0755'
+  tags:
+    - update_config
+    - update_minio
 
 # Start and enable Minio
 - name: Start and enable Minio
   systemd:
     name: minio
     daemon_reload: true
-    state: started
+    state: restarted
     enabled: true
+  tags:
+    - update_config
+    - update_minio
