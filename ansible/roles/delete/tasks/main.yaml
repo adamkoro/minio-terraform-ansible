@@ -1,0 +1,38 @@
+# Stop minion service
+- name: Stop and disable Minio
+  systemd:
+    name: minio
+    daemon_reload: true
+    state: stopped
+    enabled: false
+
+# Remove Minio user
+- name: Remove Minio user
+  user:
+    name: minio-user
+    state: absent
+
+# Remove Minio group
+- name: Remove Minio group
+  group:
+    name: minio-user
+    state: absent
+
+# Remove Minio binary
+- name: Remove Minio binary
+  file:
+    path: /usr/local/bin/minio
+    state: absent
+
+# Remove Minio config
+- name: Remove Minio config
+  file:
+    path: /etc/default/minio
+    state: absent
+
+# Remove Minio service
+- name: Remove Minio service
+  file:
+    path: /etc/systemd/system/minio.service
+    state: absent
+

@@ -1,0 +1,5 @@
+MINIO_ROOT_USER="{{ minio_admin_username }}"
+MINIO_ROOT_PASSWORD="{{ minio_admin_password }}"
+MINIO_VOLUMES="http://{{ minio_host_prefix }}-{1...{{ groups['minio'] | length }}}.{{ minio_host_suffix }}:9000{{ minio_data_path }}"
+MINIO_OPTS="--console-address :{{ minio_console_port }}"
+MINIO_SERVER_URL="http://{{ minio_url }}"

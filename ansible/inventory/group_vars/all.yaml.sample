@@ -1,0 +1,10 @@
+ansible_user: user
+minio_download_url: https://dl.min.io/server/minio/release/linux-amd64
+minio_admin_username: minioadmin
+minio_admin_password: minioadmin
+minio_url: minio.domain.com
+minio_console_url: minio-console.domain.com
+minio_console_port: 9001
+minio_data_path: /mnt/data
+minio_host_prefix: minio
+minio_host_suffix: domain.local

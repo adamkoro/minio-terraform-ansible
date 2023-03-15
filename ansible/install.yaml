@@ -1,0 +1,11 @@
+- hosts: minio
+  gather_facts: true
+  become: true
+  roles:
+    - role: minio
+
+- hosts: loadbalancer
+  gather_facts: true
+  become: true
+  roles:
+    - role: loadbalancer
