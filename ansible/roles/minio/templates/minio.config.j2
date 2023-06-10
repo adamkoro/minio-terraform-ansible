@@ -11,4 +11,4 @@ MINIO_VOLUMES="http://{{ minio_host_prefix }}-{1...{{ groups['minio'] | length }
 MINIO_OPTS="--console-address :{{ minio_console_port }}"
 
 # Minio server url (loadbalancer url)
-MINIO_SERVER_URL="http://{{ minio_url }}"
+MINIO_SERVER_URL="https://{{ minio_url }}"
