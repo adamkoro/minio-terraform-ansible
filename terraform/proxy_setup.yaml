@@ -2,37 +2,45 @@
   hosts: all
   remote_user: adamkoro
   become: true
+  vars:
+    filesystem_type: xfs
+    swap_disk: /dev/vdb
   tasks:
     ###############
     ## swap disk
     ###############
+    - name: Check if swap disk is formatted
+      ansible.builtin.command: blkid -s TYPE -o value "{{ swap_disk }}"
+      register: fs_swap
+      changed_when: false
+      failed_when: false
+
     - name: Create a filesystem for swap
       community.general.filesystem:
-        dev: /dev/vdb
+        dev: "{{ swap_disk }}"
         fstype: swap
-        force: true
-      run_once: true
+        force: false
+      when: fs_swap.rc != 0 or fs_swap.stdout != "swap"
 
     - name: Get swap disk UUID
-      ansible.builtin.shell: blkid -s UUID -o value /dev/vdb
+      ansible.builtin.command: blkid -s UUID -o value {{ swap_disk }}
       register: uuid_swap
-      run_once: true
+      changed_when: false
 
     ###############
     ## mount created disks
     ###############
     - name: Add disks to fstab
-      blockinfile:
+      ansible.builtin.blockinfile:
         path: /etc/fstab
         state: present
         block: |
           UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
-      run_once: true
 
     - name: Enable swap
-      ansible.builtin.shell: swapon -a
-      run_once: true
+      ansible.builtin.command: swapon -a
+      changed_when: false
 
     - name: Mount disks
       ansible.builtin.shell: mount -a
-      run_once: true
+      changed_when: false
