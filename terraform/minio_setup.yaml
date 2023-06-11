@@ -21,7 +21,7 @@
       community.general.filesystem:
         dev: "{{ swap_disk }}"
         fstype: swap
-        force: true
+        force: false
       when: fs_swap.rc != 0 or fs_swap.stdout != "swap"
 
     - name: Get swap disk UUID
