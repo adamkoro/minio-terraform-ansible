@@ -22,9 +22,9 @@ steps:
     - chmod 600 ~/.ssh/config && chmod 600 ~/.ssh/id_rsa
     - ls -la ~/.ssh
     - ssh kvm-1
-#  volumes:
-#    - name: ssh-config
-#      path: /root/.ssh
+  volumes:
+    - name: ssh-config
+      path: /root/.ssh
 
 
 #- name: deploy
