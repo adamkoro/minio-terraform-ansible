@@ -3,34 +3,25 @@ type: kubernetes
 name: terraform
 
 steps:
-- name: echo_secret
-  image: alpine
-  commands:
-    - echo "$MY_SECRET" > secret_file.txt
-    - cat secret_file.txt
+- name: ssh-config
+  image: alpine:3.18.0
   environment:
-    MY_SECRET:
+    SSH_HOST:
+      from_secret: ssh_host
+    SSH_USER:
+      from_secret: ssh_user
+    SSH_PRIVATE_KEY:
       from_secret: ssh_private_key
-#- name: ssh-config
-#  image: alpine:3.18.0
-#  environment:
-#    SSH_HOST:
-#      from_secret: ssh_host
-#    SSH_USER:
-#      from_secret: ssh_user
-#    SSH_PRIVATE_KEY:
-#      from_secret: ssh_private_key
-#  commands:
-#    - apk add --no-cache openssh-client
-#    - mkdir -p ~/.ssh
-#    - eval $(ssh-agent -s)
-#    - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-#    - cat ~/.ssh/id_rsa
-#    #- ssh-keyscan -H ${SSH_HOST} > ~/.ssh/known_hosts
-#    - echo -e "Host kvm-1\n\tHostName ${SSH_HOST}\n\tUser ${SSH_USER}\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
-#    - chmod 600 ~/.ssh/config && chmod 600 ~/.ssh/id_rsa
-#    - ls -la ~/.ssh
-#    - ssh kvm-1
+  commands:
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - ssh-keyscan -H $SSH_HOST > ~/.ssh/known_hosts
+    - echo -e "Host kvm-1\n\tHostName ${SSH_HOST}\n\tUser ${SSH_USER}\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
+    - chmod 600 ~/.ssh/config && chmod 600 ~/.ssh/id_rsa
+    - ls -la ~/.ssh
+    - ssh kvm-1
 #  volumes:
 #    - name: ssh-config
 #      path: /root/.ssh
