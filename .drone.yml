@@ -23,7 +23,7 @@ steps:
     username:
       from_secret: GIT_USERNAME
     password:
-      from_secret: GIT_TOKEN
+      from_secret: GIT_PASSWORD
 
 #- name: ansible-deploy
 #  image: ansible/ansible-runner:latest
