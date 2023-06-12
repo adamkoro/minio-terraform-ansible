@@ -18,7 +18,7 @@ steps:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST > ~/.ssh/known_hosts
-    - echo -e "Host kvm-1\n\tHostName ${SSH_HOST}\n\tUser ${SSH_USER}\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
+    - echo -e "Host kvm-1\n\tHostName $SSH_HOST\n\tUser $SSH_USER\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
     - chmod 600 ~/.ssh/config && chmod 600 ~/.ssh/id_rsa
     - ls -la ~/.ssh
     - ssh kvm-1
