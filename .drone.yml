@@ -7,11 +7,11 @@ steps:
   image: alpine:3.18.0
   environment:
     SSH_HOST:
-      from_secret: SSH_HOST
+      from_secret: ssh_host
     SSH_USER:
-      from_secret: SSH_USER
+      from_secret: ssh_user
     SSH_PRIVATE_KEY:
-      from_secret: SSH_PRIVATE_KEY
+      from_secret: ssh_private_key
   commands:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
