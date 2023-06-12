@@ -1,0 +1,10 @@
+ansible_user: adamkoro
+minio_download_url: https://fileserver.adamkoro.local/minio/20230313
+minio_admin_username: adamkoro
+minio_admin_password: legostarwars99
+minio_url: minio.adamkoro.com
+minio_console_url: minio-console.adamkoro.com
+minio_console_port: 9001
+minio_data_path: /mnt/data
+minio_host_prefix: minio
+minio_host_suffix: adamkoro.local
