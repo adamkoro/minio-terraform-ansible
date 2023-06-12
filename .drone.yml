@@ -6,6 +6,7 @@ steps:
 - name: ssh-config
   image: alpine:3.18.0
   commands:
+    - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - eval $(ssh-agent -s)
     - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
