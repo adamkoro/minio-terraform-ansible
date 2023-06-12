@@ -1,6 +1,2 @@
-*.tfvars
-*.tfstate*
 .terraform*
-all.yaml
-hosts.ini
 .*
