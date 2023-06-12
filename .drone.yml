@@ -1,31 +1,51 @@
 kind: pipeline
 type: kubernetes
-name: minio-deploy
+name: terraform
 
 steps:
-- name: terraform-deploy
-  image: hashicorp/terraform:1.5.0
+- name: ssh-config
+  image: alpine:3.18.0
   commands:
-  - terraform -chdir=./terraform init
-  - terraform -chdir=./terraform plan
-  - terraform -chdir=./terraform apply -auto-approve
+  - mkdir -p ~/.ssh
+  - eval $(ssh-agent -s)
+  - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+  - ssh-keyscan -H ${SSH_HOST} > ~/.ssh/known_hosts
+  - echo -e "Host kvm-1\n\tHostName ${SSH_HOST}\n\tUser ${SSH_USER}\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
+  - chmod 600 ~/.ssh/config && chmod 600 ~/.ssh/id_rsa
+  - ls -la ~/.ssh
+  - ssh kvm-1
+  volumes:
+    - name: ssh-config
+      path: ~/.ssh
 
-- name: git-update
-  image: plugins/git
-  settings:
-    depth: 1
-    tags: true
-    commit: true
-    force: true
-    branch: main
-    repo: 
-      from_secret: GIT_REPO
-    username:
-      from_secret: GIT_USERNAME
-    password:
-      from_secret: GIT_PASSWORD
+
+#- name: deploy
+#  image: hashicorp/terraform:1.5.0
+#  commands:
+#  - terraform -chdir=./terraform init
+#  - terraform -chdir=./terraform plan
+#  - terraform -chdir=./terraform apply -auto-approve
+
+#- name: git-update
+#  image: plugins/git
+#  settings:
+#    depth: 1
+#    tags: true
+#    commit: true
+#    force: true
+#    branch: main
+#    repo: 
+#      from_secret: GIT_REPO
+#    username:
+#      from_secret: GIT_USERNAME
+#    password:
+#      from_secret: GIT_PASSWORD
 
 #- name: ansible-deploy
 #  image: ansible/ansible-runner:latest
 #  commands:
 #  - ansible-playbook -i ansible/inventory/hosts.ini ansible/install.yaml 
+
+volumes:
+- name: ssh-config
+  temp: {}
