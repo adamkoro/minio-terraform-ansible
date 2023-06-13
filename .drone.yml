@@ -3,7 +3,7 @@ type: kubernetes
 name: terraform
 
 steps:
-- name: get_secrets
+- name: requirements
   image: alpine:3.18
   environment:
     SSH_PUB_KEY: 
