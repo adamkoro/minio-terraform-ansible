@@ -13,6 +13,7 @@ steps:
   commands:
   - ls -la
   - terraform -chdir=./terraform init
+  - ls -la terraform/
   volumes:
     - name: terraform
       path: /drone/src/terraform
