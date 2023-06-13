@@ -35,9 +35,6 @@ variable "cloud_init_gateway" {
 variable "node_ip_range" {
   type = string
 }
-variable "ssh_private_key_path" {
-  type = string
-}
 
 variable "base_root_volume_path" {
   type = string
