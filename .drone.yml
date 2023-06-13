@@ -15,7 +15,7 @@ steps:
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
     - echo "$SSH_PRIV_KEY" > /root/.ssh/home
-    - curl --resolve fileserver.adamkoro.local:53:192.168.1.5 -Lk https://fileserver.adamkoro.local/terraform_secret/minio_cluster.tfvars > ./terraform/terraform.tfvars
+    - curl -Lk https://fileserver.adamkoro.local/terraform_secret/minio_cluster.tfvars > ./terraform/terraform.tfvars
   volumes:
     - name: ssh_data
       path: /root/.ssh
