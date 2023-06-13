@@ -26,9 +26,9 @@ resource "libvirt_domain" "proxy" {
     command = "while ! nc -q0 ${var.node_ip_range}${count.index + 5} 22 < /dev/null > /dev/null 2>&1; do sleep 10;done"
   }
 
-  provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${var.node_ip_range}${count.index + 5},' --private-key ${var.ssh_private_key_path} proxy_setup.yaml"
-  }
+  #provisioner "local-exec" {
+  #  command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${var.node_ip_range}${count.index + 5},' --private-key ${var.ssh_private_key_path} proxy_setup.yaml"
+  #}
 }
 
 resource "libvirt_volume" "proxy_root_disk" {

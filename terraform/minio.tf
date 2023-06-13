@@ -29,9 +29,9 @@ resource "libvirt_domain" "minio" {
     command = "while ! nc -q0 ${var.node_ip_range}${count.index + 6} 22 < /dev/null > /dev/null 2>&1; do sleep 10;done"
   }
 
-  provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${var.node_ip_range}${count.index + 6},' --private-key ${var.ssh_private_key_path} minio_setup.yaml --extra-vars 'minio_data_path=${var.minio_data_path}'"
-  }
+  #provisioner "local-exec" {
+  #  command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${var.node_ip_range}${count.index + 6},' --private-key ${var.ssh_private_key_path} minio_setup.yaml --extra-vars 'minio_data_path=${var.minio_data_path}'"
+  #}
 }
 
 resource "libvirt_volume" "root_disk" {
