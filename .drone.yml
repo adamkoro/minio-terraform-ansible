@@ -3,38 +3,17 @@ type: kubernetes
 name: terraform
 
 steps:
-- name: ssh-config
-  image: alpine:3.18.0
-  environment:
-    SSH_HOST:
-      from_secret: ssh_host
-    SSH_USER:
-      from_secret: ssh_user
-    SSH_PRIVATE_KEY:
-      from_secret: ssh_private_key
-  commands:
-    - apk add --no-cache openssh-client
-    - mkdir -p ~/.ssh
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST > ~/.ssh/known_hosts
-    - echo -e "Host kvm-1\n\tHostName $SSH_HOST\n\tUser $SSH_USER\n\tIdentityFile ~/.ssh/id_rsa\n" > ~/.ssh/config
-    - chmod 600 ~/.ssh/config && chmod 600 ~/.ssh/id_rsa
-  volumes:
-    - name: ssh-config
-      path: /root/.ssh
-
-
-- name: deploy
-  image: hashicorp/terraform:1.5.0
-  commands:
-  - cat ~/.ssh/config
-  - terraform -chdir=./terraform init
-  - terraform -chdir=./terraform plan
-  #- terraform -chdir=./terraform apply -auto-approve
-  volumes:
-    - name: ssh-config
-      path: /root/.ssh
+- name: check-syntax
+  image: jmccann/drone-terraform:5
+  settings:
+    plan: false
+  actions:
+    - fmt
+  fmt_options:
+    write: false
+    diff: true
+    check: true
+  tf_data_dir: terraform/
 
 #- name: git-update
 #  image: plugins/git
