@@ -6,12 +6,14 @@ steps:
 - name: check-syntax
   image: hashicorp/terraform:1.5.0
   commands:
+  - ls -la terraform/
   - terraform -chdir=./terraform fmt -check=true
+  - ls -la terraform/
 
 - name: init
   image: hashicorp/terraform:1.5.0
   commands:
-  - ls -la
+  - ls -la terraform/
   - terraform -chdir=./terraform init
   - ls -la terraform/
   volumes:
