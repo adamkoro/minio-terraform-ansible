@@ -7,11 +7,22 @@ steps:
   image: hashicorp/terraform:1.5.0
   commands:
   - terraform -chdir=./terraform fmt -check=true
-  - pwd
-  #- terraform -chdir=./terraform apply -auto-approve
+
+- name: init
+  image: hashicorp/terraform:1.5.0
+  commands:
+  - terraform -chdir=./terraform init
   volumes:
-    - name: ssh-config
-      path: /root/.ssh
+    - name: terraform
+      path: /drone/src/terraform
+
+- name: plan
+  image: hashicorp/terraform:1.5.0
+  commands:
+  - terraform -chdir=./terraform plan
+  volumes:
+    - name: terraform
+      path: /drone/src/terraform
 
 #- name: git-update
 #  image: plugins/git
@@ -34,5 +45,5 @@ steps:
 #  - ansible-playbook -i ansible/inventory/hosts.ini ansible/install.yaml 
 
 volumes:
-- name: ssh-config
+- name: terraform
   temp: {}
