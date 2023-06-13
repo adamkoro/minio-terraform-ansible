@@ -6,6 +6,7 @@ steps:
 - name: check-syntax
   image: hashicorp/terraform:1.5.0
   commands:
+  - ls -la
   - terraform -chdir=./terraform fmt -check=true
 
 - name: init
