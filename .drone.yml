@@ -6,30 +6,17 @@ steps:
 - name: check-syntax
   image: hashicorp/terraform:1.5.0
   commands:
-  - ls -la terraform/
-  - terraform -chdir=./terraform fmt -check=true
-  - ls -la terraform
-  volumes:
-    - name: terraform
-      path: /drone/src/terraform
+  - terraform -chdir=./terraform fmt -check -diff -recursive
 
 - name: init
   image: hashicorp/terraform:1.5.0
   commands:
-  - ls -la terraform/
   - terraform -chdir=./terraform init
-  - ls -la terraform/
-  volumes:
-    - name: terraform
-      path: /drone/src/terraform
 
 - name: plan
   image: hashicorp/terraform:1.5.0
   commands:
   - terraform -chdir=./terraform plan
-  volumes:
-    - name: terraform
-      path: /drone/src/terraform
 
 #- name: git-update
 #  image: plugins/git
