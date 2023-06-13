@@ -14,7 +14,7 @@ steps:
     - apk add --no-cache curl
     - cat /etc/resolv.conf
     - cat /etc/hosts
-    - ping -c 1 fileserver.adamkoro.local
+    - ping -c 1 192.168.1.10
     - nslookup fileserver.adamkoro.local
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
