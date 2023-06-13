@@ -12,6 +12,7 @@ steps:
       from_secret: cloud_init_adamkoro_priv_key
   commands:
     - apk add --no-cache curl
+    - echo -e "search adamkoro.local\nnameserver 192.168.1.10" > /etc/resolv.conf
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
     - echo "$SSH_PRIV_KEY" > /root/.ssh/home
