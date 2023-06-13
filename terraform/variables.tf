@@ -54,3 +54,20 @@ variable "data_volume_pool" {
 variable "minio_data_path" {
   type = string
 }
+
+variable "ssh_user" {
+  type      = string
+  sensitive = true
+}
+variable "ssh_password" {
+  type      = string
+  sensitive = true
+}
+variable "ssh_host" {
+  type      = string
+  sensitive = true
+}
+variable "ssh_port" {
+  type      = number
+  sensitive = true
+}
