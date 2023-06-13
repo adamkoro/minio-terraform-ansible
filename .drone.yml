@@ -10,12 +10,14 @@ steps:
       from_secret: cloud_init_adamkoro_pub_key
     SSH_PRIV_KEY: 
       from_secret: cloud_init_adamkoro_priv_key
+    SSH_HOST:
+      from_secret: ssh_host
   commands:
     - apk add --no-cache curl
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
     - echo "$SSH_PRIV_KEY" > /root/.ssh/home
-    - touch /root/.ssh/known_hosts
+    - ssh-keyscan -H $SSH_HOST >> /root/.ssh/known_hosts
     - curl -Lk https://fileserver.adamkoro.local/terraform_secret/minio_cluster.tfvars > ./terraform/terraform.tfvars
   volumes:
     - name: ssh_data
