@@ -1,6 +1,6 @@
 resource "libvirt_domain" "minio" {
   count = var.minio_count
-  name = "${var.minio_domain_name}-${count.index + 1}"
+  name  = "${var.minio_domain_name}-${count.index + 1}"
   cpu {
     mode = "host-passthrough"
   }
@@ -38,27 +38,27 @@ resource "libvirt_volume" "root_disk" {
   name   = "${var.minio_domain_name}-${count.index + 1}-root.qcow2"
   pool   = var.root_volume_pool
   source = var.base_root_volume_path
-  count = var.minio_count
+  count  = var.minio_count
 }
 
 resource "libvirt_volume" "swap_disk" {
-  name = "${var.minio_domain_name}-${count.index + 1}-swap.qcow2"
-  pool = var.swap_volume_pool
-  size = 1073741824
+  name  = "${var.minio_domain_name}-${count.index + 1}-swap.qcow2"
+  pool  = var.swap_volume_pool
+  size  = 1073741824
   count = var.minio_count
 }
 
 resource "libvirt_volume" "data_disk" {
-  name = "${var.minio_domain_name}-${count.index + 1}-data.qcow2"
-  pool = var.data_volume_pool
-  size = 64424509440
+  name  = "${var.minio_domain_name}-${count.index + 1}-data.qcow2"
+  pool  = var.data_volume_pool
+  size  = 64424509440
   count = var.minio_count
 }
 
 resource "libvirt_cloudinit_disk" "cloud_init" {
-  pool  = var.root_volume_pool
-  name  = "${var.minio_domain_name}-${count.index + 1}-cloud-init.iso"
-  count = var.minio_count
+  pool           = var.root_volume_pool
+  name           = "${var.minio_domain_name}-${count.index + 1}-cloud-init.iso"
+  count          = var.minio_count
   user_data      = <<EOF
 #cloud-config
 hostname: ${var.minio_domain_name}-${count.index + 1}

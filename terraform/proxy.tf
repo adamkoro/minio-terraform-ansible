@@ -1,6 +1,6 @@
 resource "libvirt_domain" "proxy" {
   count = var.proxy_count
-  name = "${var.proxy_domain_name}-${count.index + 1}"
+  name  = "${var.proxy_domain_name}-${count.index + 1}"
   cpu {
     mode = "host-passthrough"
   }
@@ -35,20 +35,20 @@ resource "libvirt_volume" "proxy_root_disk" {
   name   = "${var.proxy_domain_name}-${count.index + 1}-root.qcow2"
   pool   = var.root_volume_pool
   source = var.base_root_volume_path
-  count = var.proxy_count
+  count  = var.proxy_count
 }
 
 resource "libvirt_volume" "proxy_swap_disk" {
-  name = "${var.proxy_domain_name}-${count.index + 1}-swap.qcow2"
-  pool = var.swap_volume_pool
-  size = 1073741824
+  name  = "${var.proxy_domain_name}-${count.index + 1}-swap.qcow2"
+  pool  = var.swap_volume_pool
+  size  = 1073741824
   count = var.proxy_count
 }
 
 resource "libvirt_cloudinit_disk" "proxy_cloud_init" {
-  pool  = var.root_volume_pool
-  name  = "${var.proxy_domain_name}-${count.index + 1}-cloud-init.iso"
-  count = var.proxy_count
+  pool           = var.root_volume_pool
+  name           = "${var.proxy_domain_name}-${count.index + 1}-cloud-init.iso"
+  count          = var.proxy_count
   user_data      = <<EOF
 #cloud-config
 hostname: ${var.proxy_domain_name}-${count.index + 1}
@@ -119,7 +119,7 @@ config:
       name: eth0
       subnets:
       - type: static
-        address: '${var.node_ip_range}${count.index+ 5}'
+        address: '${var.node_ip_range}${count.index + 5}'
         netmask: '${var.cloud_init_netmask}'
         gateway: '${var.cloud_init_gateway}'
     - type: nameserver
