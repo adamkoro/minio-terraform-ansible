@@ -4,16 +4,14 @@ name: terraform
 
 steps:
 - name: check-syntax
-  image: jmccann/drone-terraform:5
-  settings:
-    plan: false
-  actions:
-    - fmt
-  fmt_options:
-    write: false
-    diff: true
-    check: true
-  tf_data_dir: terraform/
+  image: hashicorp/terraform:1.5.0
+  commands:
+  - terraform -chdir=./terraform fmt -check=true
+  - pwd
+  #- terraform -chdir=./terraform apply -auto-approve
+  volumes:
+    - name: ssh-config
+      path: /root/.ssh
 
 #- name: git-update
 #  image: plugins/git
