@@ -10,6 +10,6 @@ terraform {
 
 provider "libvirt" {
   #uri = "qemu:///system"
-  uri = "qemu+ssh://kvm-1/system"
+  uri = "qemu+ssh://terraform-deploy@kvm-1.adamkoro.local/system"
 }
 
