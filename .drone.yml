@@ -12,10 +12,14 @@ steps:
       from_secret: cloud_init_adamkoro_priv_key
   commands:
     - apk add --no-cache curl
+    - cat /etc/resolv.conf
+    - cat /etc/hosts
+    - ping -c 1 fileserver.adamkoro.local
+    - nslookup fileserver.adamkoro.local
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
     - echo "$SSH_PRIV_KEY" > /root/.ssh/home
-    - curl --resolve fileserver.adamkoro.local:53:192.168.1.10 https://fileserver.adamkoro.local/terraform_secret/minio_cluster.tfvars > ./terraform/terraform.tfvars
+    - curl --resolve fileserver.adamkoro.local:53:192.168.1.10 -Lk https://fileserver.adamkoro.local/terraform_secret/minio_cluster.tfvars > ./terraform/terraform.tfvars
   volumes:
     - name: ssh_data
       path: /root/.ssh
