@@ -3,12 +3,15 @@ type: kubernetes
 name: terraform
 
 steps:
-#- name: check-syntax
-  #image: hashicorp/terraform:1.5.0
-  #commands:
-  #- ls -la terraform/
-  #- terraform -chdir=./terraform fmt -check=true
-  #- ls -la terraform/
+- name: check-syntax
+  image: hashicorp/terraform:1.5.0
+  commands:
+  - ls -la terraform/
+  - terraform -chdir=./terraform fmt -check=true
+  - ls -la terraform
+  volumes:
+    - name: terraform
+      path: /drone/src/terraform
 
 - name: init
   image: hashicorp/terraform:1.5.0
