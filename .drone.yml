@@ -4,7 +4,7 @@ name: terraform
 
 steps:
 - name: requirements
-  image: docker.io/library/alpine:3.18
+  image: registry.suse.com/bci/bci-base:15.4
   environment:
     SSH_PUB_KEY: 
       from_secret: cloud_init_adamkoro_pub_key
@@ -13,9 +13,8 @@ steps:
     SSH_HOST:
       from_secret: ssh_host
   commands:
-    - echo -e "http://nl.alpinelinux.org/alpine/v3.18/main\nhttp://nl.alpinelinux.org/alpine/v3.18/community" > /etc/apk/repositories
-    - apk add curl
-    - apk add openssh-client
+    - zypper ref 
+    - zypper in -y curl openssh-client
     - eval $(ssh-agent -s)
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
