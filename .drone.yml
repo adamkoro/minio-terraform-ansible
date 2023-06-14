@@ -66,9 +66,3 @@ steps:
 volumes:
 - name: ssh_data
   temp: {}
-
-trigger:
-  branch:
-  - main
-  event:
-  - push
