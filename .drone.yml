@@ -4,7 +4,7 @@ name: terraform
 
 steps:
 - name: requirements
-  image: alpine:3.18
+  image: alpine:latest
   environment:
     SSH_PUB_KEY: 
       from_secret: cloud_init_adamkoro_pub_key
@@ -64,5 +64,11 @@ steps:
 #  - ansible-playbook -i ansible/inventory/hosts.ini ansible/install.yaml 
 
 volumes:
-- name: terraform
+- name: ssh_data
   temp: {}
+
+trigger:
+  branch:
+  - main
+  event:
+  - push
