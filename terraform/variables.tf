@@ -56,7 +56,7 @@ variable "ssh_user" {
   type      = string
   sensitive = true
 }
-variable "ssh_password" {
+variable "ssh_key" {
   type      = string
   sensitive = true
 }
