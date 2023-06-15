@@ -14,7 +14,7 @@ steps:
       from_secret: ssh_host
   commands:
     - zypper ref
-    - zypper install -y curl openssh-client
+    - zypper install -y openssh
     - eval $(ssh-agent -s)
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
