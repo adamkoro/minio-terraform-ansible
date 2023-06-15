@@ -38,13 +38,13 @@ steps:
   commands:
   - terraform -chdir=./terraform init
 
-- name: plan
-  image: hashicorp/terraform:1.5.0
-  commands:
-  - terraform -chdir=./terraform plan
-  volumes:
-    - name: ssh_data
-      path: /root/.ssh
+#- name: plan
+#  image: hashicorp/terraform:1.5.0
+#  commands:
+#  - terraform -chdir=./terraform plan
+#  volumes:
+#    - name: ssh_data
+#      path: /root/.ssh
 
 #- name: git-update
 #  image: plugins/git
@@ -77,3 +77,16 @@ trigger:
   - push
   - pull_request
   - webhook
+---
+name: deploy
+kind: pipeline
+type: kubernetes
+steps:
+
+- name: test
+  image: registry.suse.com/bci/bci-base:15.4
+  commands:
+  - ls -la /root/.ssh
+  volumes:
+    - name: ssh_data
+      path: /root/.ssh
