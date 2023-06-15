@@ -77,16 +77,4 @@ trigger:
   - push
   - pull_request
   - webhook
----
-name: deploy
-kind: pipeline
-type: kubernetes
-steps:
 
-- name: test
-  image: registry.suse.com/bci/bci-base:15.4
-  commands:
-  - ls -la /root/.ssh
-  volumes:
-    - name: ssh_data
-      path: /root/.ssh
