@@ -4,7 +4,7 @@ name: terraform
 
 steps:
 - name: requirements
-  image: ubuntu:22.04
+  image: registry.suse.com/bci/bci-base:15.4
   environment:
     SSH_PUB_KEY: 
       from_secret: cloud_init_adamkoro_pub_key
@@ -13,8 +13,8 @@ steps:
     SSH_HOST:
       from_secret: ssh_host
   commands:
-    - apt update
-    - apt install -y curl openssh-client
+    - zypper ref
+    - zypper install -y curl openssh-client
     - eval $(ssh-agent -s)
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
