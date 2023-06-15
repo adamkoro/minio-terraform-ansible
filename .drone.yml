@@ -12,6 +12,8 @@ steps:
       from_secret: cloud_init_adamkoro_priv_key
     SSH_HOST:
       from_secret: ssh_host
+    SSH_TERRAFORM_KEY:
+      from_secret: ssh_key
   commands:
     - zypper ref
     - zypper install -y openssh
@@ -19,6 +21,7 @@ steps:
     - mkdir -p /root/.ssh
     - echo "$SSH_PUB_KEY" > /root/.ssh/home.pub
     - echo "$SSH_PRIV_KEY" > /root/.ssh/home
+    - echo "$SSH_TERRAFORM_KEY" > /root/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> /root/.ssh/known_hosts
     - curl -Lk https://fileserver.adamkoro.local/terraform_secret/minio_cluster.tfvars > ./terraform/terraform.tfvars
   volumes:
