@@ -1,3 +1,5 @@
 .terraform*
 .vscode
 terraform.tfvars
+*longhorn*
+files
