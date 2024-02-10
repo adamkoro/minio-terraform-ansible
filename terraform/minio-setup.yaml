@@ -1,12 +1,11 @@
-- name: Minio setup
-  hosts: all
-  remote_user: adamkoro
+- name: Minio node setup
   become: true
+  hosts: all
   vars:
-    filesystem_type: xfs
-    swap_disk: /dev/vdb
-    minio_disk: /dev/vdc
-    minio_mount: /mnt/data
+    filesystem_type: ext4
+    swap_disk: /dev/vda
+    minio_disk: /dev/vdb
+    minio_disk_mount: /mnt/data
   tasks:
     ###############
     ## swap disk
@@ -21,8 +20,8 @@
       community.general.filesystem:
         dev: "{{ swap_disk }}"
         fstype: swap
-        force: false
-      when: fs_swap.rc != 0 or fs_swap.stdout != "swap"
+        force: true
+      when: fs_swap.stdout is defined and (fs_swap.stdout != "swap" or not fs_swap.stdout)
 
     - name: Get swap disk UUID
       ansible.builtin.command: blkid -s UUID -o value {{ swap_disk }}
@@ -30,26 +29,25 @@
       changed_when: false
 
     ###############
-    ## datastore disk
+    ## minio disk
     ###############
-    - name: Check if datastore disk is formatted
-      ansible.builtin.command: blkid -s TYPE -o value {{ minio_disk }}
+    - name: Check if minio disk is formatted
+      ansible.builtin.command: blkid -s TYPE -o value "{{ minio_disk }}"
       register: fs_minio
       changed_when: false
       failed_when: false
 
-    - name: Format datastore disk
+    - name: Create a filesystem for minio
       community.general.filesystem:
         dev: "{{ minio_disk }}"
         fstype: "{{ filesystem_type }}"
-        force: false
-      when: fs_minio.rc != 0 or fs_minio.stdout != filesystem_type
+        force: true
+      when: fs_minio.stdout is defined and (fs_minio.stdout != filesystem_type or not fs_minio.stdout)
 
-    - name: Get datastore disk UUID
+    - name: Get minio disk UUID
       ansible.builtin.command: blkid -s UUID -o value {{ minio_disk }}
-      register: uuid_datastore
+      register: uuid_minio
       changed_when: false
-
 
     ###############
     ## mount created disks
@@ -60,20 +58,23 @@
         state: present
         block: |
           UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
-          UUID={{ uuid_datastore.stdout }} {{ minio_mount }} xfs defaults 0 0
+          UUID={{ uuid_minio.stdout }} {{ minio_disk_mount }} {{ filesystem_type }} defaults 0 0
+      when: uuid_swap.stdout is defined
 
-    - name: Create directory for Minio data
+    - name: Create directory for mounts
       ansible.builtin.file:
-        path: "{{ minio_mount }}"
+        path: "{{ item }}"
         state: directory
         owner: root
         group: root
-        mode: '0755'
+        mode: "0644"
+      loop:
+        - "{{ minio_disk_mount }}"
 
     - name: Enable swap
       ansible.builtin.command: swapon -a
       changed_when: false
 
     - name: Mount disks
-      ansible.builtin.shell: mount -a
+      ansible.builtin.command: mount -a
       changed_when: false

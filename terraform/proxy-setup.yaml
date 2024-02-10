@@ -1,10 +1,9 @@
-- name: Proxy setup
-  hosts: all
-  remote_user: adamkoro
+- name: Proxy node setup
   become: true
+  hosts: all
   vars:
     filesystem_type: xfs
-    swap_disk: /dev/vdb
+    swap_disk: /dev/vda
   tasks:
     ###############
     ## swap disk
@@ -16,11 +15,11 @@
       failed_when: false
 
     - name: Create a filesystem for swap
-      community.general.filesystem:
+      filesystem:
         dev: "{{ swap_disk }}"
         fstype: swap
-        force: false
-      when: fs_swap.rc != 0 or fs_swap.stdout != "swap"
+        force: true
+      when: fs_swap.stdout is defined and (fs_swap.stdout != "swap" or not fs_swap.stdout)
 
     - name: Get swap disk UUID
       ansible.builtin.command: blkid -s UUID -o value {{ swap_disk }}
@@ -36,11 +35,12 @@
         state: present
         block: |
           UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
+      when: uuid_swap.stdout is defined
 
     - name: Enable swap
       ansible.builtin.command: swapon -a
       changed_when: false
 
     - name: Mount disks
-      ansible.builtin.shell: mount -a
+      ansible.builtin.command: mount -a
       changed_when: false

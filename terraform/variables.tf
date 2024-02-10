@@ -1,70 +1,128 @@
-variable "minio_count" {
-  type = number
+## Default
+variable "minio_vm_count" {
+  default     = 3
+  description = "Number of VMs to create"
 }
-variable "minio_domain_name" {
-  type = string
+variable "proxy_vm_count" {
+  default     = 3
+  description = "Number of VMs to create"
 }
-variable "proxy_count" {
-  type = number
+variable "proxmox_minio_vm_name" {
+  description = "Name of VMs to create"
 }
-variable "proxy_domain_name" {
-  type = string
+variable "proxmox_proxy_vm_name" {
+  description = "Name of VMs to create"
 }
-
+variable "proxmox_template_name" {
+  type        = string
+  description = "Proxmox VM template"
+}
+variable "proxmox_target_node" {
+  type        = string
+  description = "Proxmox target node"
+}
+## Cloud-init
 variable "cloud_init_username" {
-  type = string
+  type        = string
+  description = "Username for cloud-init"
 }
 variable "cloud_init_password" {
-  type = string
+  type        = string
+  sensitive   = true
+  description = "Password for cloud-init"
 }
-variable "cloud_init_sshkey" {
-  type = string
-}
-variable "cloud_init_nameserver" {
-  type = string
-}
-variable "cloud_init_search_domain" {
-  type = string
+variable "cloud_init_pub_ssh_key" {
+  type        = string
+  description = "Public SSH key for cloud-init"
 }
 variable "cloud_init_netmask" {
-  type = string
+  type        = string
+  description = "Netmask for cloud-init"
 }
 variable "cloud_init_gateway" {
-  type = string
+  type        = string
+  description = "Gateway for cloud-init"
 }
-variable "node_ip_range" {
+variable "cloud_init_ip_pool" {
+  type        = string
+  description = "IP pool for cloud-init"
+}
+variable "cloud_init_minio_ip_increase" {
+  type        = number
+  description = "IP increase for cloud-init"
+}
+variable "cloud_init_proxy_ip_increase" {
+  type        = number
+  description = "IP increase for cloud-init"
+}
+variable "cloud_init_domain" {
+  type        = string
+  description = "Domain for cloud-init"
+}
+## Proxmox provider
+variable "proxmox_api_url" {
+  type        = string
+  description = "Proxmox API URL"
+}
+variable "proxmox_api_token_id" {
+  type        = string
+  sensitive   = true
+  description = "Proxmox API Token ID"
+}
+variable "proxmox_api_token_secret" {
+  type        = string
+  sensitive   = true
+  description = "Proxmox API Token Secret"
+}
+## Proxmox storage
+variable "proxmox_root_pool" {
+  type        = string
+  description = "Proxmox root disk pool"
+}
+variable "proxmox_root_pool_size" {
+  type        = number
+  description = "Proxmox root disk pool size"
+}
+variable "proxmox_swap_pool" {
+  type        = string
+  description = "Proxmox swap disk pool"
+}
+variable "proxmox_swap_pool_size" {
+  type        = number
+  description = "Proxmox swap disk pool size"
+}
+variable "proxmox_minio_pool" {
+  type        = string
+  description = "Proxmox minio disk pool"
+}
+variable "proxmox_minio_pool_size" {
+  type        = number
+  description = "Proxmox minio disk pool size"
+}
+variable "proxmox_cloudinit_pool" {
   type = string
+  description = "Proxmox cloud-init pool"
+  
+}
+variable "cloudinit_host_pool_path" {
+  type = string
+  description = "Host pool path for cloud-init snippet"
+  
+}
+variable "proxmox_user" {
+  type        = string
+  description = "Proxmox user"
+}
+variable "proxmox_host" {
+  type        = string
+  description = "Proxmox host"
+}
+variable "proxmox_private_key" {
+  type        = string
+  description = "Proxmox private key path"
 }
 
-variable "base_root_volume_path" {
-  type = string
-}
-variable "root_volume_pool" {
-  type = string
-}
-variable "swap_volume_pool" {
-  type = string
-}
-variable "data_volume_pool" {
-  type = string
-}
-variable "minio_data_path" {
-  type = string
-}
-
-variable "ssh_user" {
-  type      = string
-  sensitive = true
-}
-variable "ssh_key" {
-  type      = string
-  sensitive = true
-}
-variable "ssh_host" {
-  type      = string
-  sensitive = true
-}
-variable "ssh_port" {
-  type      = number
-  sensitive = true
+variable "ansbile_private_key" {
+  type        = string
+  description = "Ansible private key path"
 }
