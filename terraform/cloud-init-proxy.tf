@@ -12,7 +12,7 @@ data "template_file" "cloud_init_proxy_template" {
 
 resource "local_file" "cloud_init_proxy_local" {
   count    = var.proxy_vm_count
-  content  = element(data.template_file.cloud_init_minio_template.*.rendered, count.index)
+  content  = element(data.template_file.cloud_init_proxy_template.*.rendered, count.index)
   filename = "${path.module}/files/cloud_init_${var.proxmox_proxy_vm_name}_${count.index + 1}.cfg"
 }
 
@@ -26,7 +26,7 @@ resource "null_resource" "cloud_init_proxy" {
   }
 
   provisioner "file" {
-    source      = element(local_file.cloud_init_minio_local.*.filename, count.index)
+    source      = element(local_file.cloud_init_proxy_local.*.filename, count.index)
     destination = "${var.cloudinit_host_pool_path}/snippets/cloud_init_${var.proxmox_proxy_vm_name}-${count.index + 1}.yml"
   }
 }
