@@ -1,0 +1,16 @@
+---
+# Install keepalived
+- name: Include keepalived tasks
+  include_tasks: keepalived.yaml
+
+# Install haproxy
+- name: Include haproxy tasks
+  include_tasks: haproxy.yaml
+  when:
+  - haproxy is defined and haproxy == true
+
+# Install nginx
+- name: Include nginx tasks
+  include_tasks: nginx.yaml
+  when:
+  - nginx is defined and nginx == true
