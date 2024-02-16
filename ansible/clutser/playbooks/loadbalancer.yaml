@@ -1,0 +1,10 @@
+---
+- name: Gather facts
+  hosts: all
+  gather_facts: true
+
+- name: Setup loadbalancer cluster
+  hosts: loadbalancer
+  become: true
+  roles:
+    - role: loadbalancer
