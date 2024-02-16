@@ -1,0 +1,20 @@
+# Stop Haproxy service
+- name: Stop and disable haproxy
+  systemd:
+    name: haproxy
+    daemon_reload: true
+    state: stopped
+    enabled: false
+
+# Remove Haproxy config
+- name: Remove haproxy config
+  file:
+    path: /etc/haproxy/haproxy.cfg
+    state: absent
+
+# Remove Haproxy
+- name: Remove packages
+  community.general.zypper:
+    name:
+      - haproxy
+    state: absent

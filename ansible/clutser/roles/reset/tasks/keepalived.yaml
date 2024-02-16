@@ -1,0 +1,21 @@
+---
+# Stop keepalived service
+- name: Stop and disable keepalived
+  systemd:
+    name: keepalived
+    daemon_reload: true
+    state: stopped
+    enabled: false
+
+# Remove keepalived config
+- name: Remove keepalived config
+  file:
+    path: /etc/keepalived/keepalived.conf
+    state: absent
+
+# Remove keepalived
+- name: Remove packages
+  community.general.zypper:
+    name:
+      - keepalived
+    state: absent

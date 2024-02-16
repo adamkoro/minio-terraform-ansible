@@ -1,0 +1,20 @@
+# Stop nginx service only on loadbalancer nodes
+- name: Stop and disable Nginx
+  systemd:
+    name: nginx
+    daemon_reload: true
+    state: stopped
+    enabled: false
+
+# Remove Nginx config only on loadbalancer nodes
+- name: Remove Nginx config
+  file:
+    path: /etc/nginx/conf.d/minio.conf
+    state: absent
+
+# Remove Nginx only on loadbalancer nodes
+- name: Remove packages
+  community.general.zypper:
+    name:
+      - nginx
+    state: absent

@@ -1,0 +1,19 @@
+# Remove Minio
+- name: Remove minio
+  include_tasks: minio.yaml
+  when: inventory_hostname in groups['minio']
+
+# Remove Nginx
+- name: Remove nginx
+  include_tasks: nginx.yaml
+  when: inventory_hostname in groups['loadbalancer'] and nginx is defined and nginx == true
+
+# Remove Haproxy
+- name: Remove haproxy
+  include_tasks: haproxy.yaml
+  when: inventory_hostname in groups['loadbalancer'] and haproxy is defined and haproxy == true
+
+# Remove keepalived
+- name: Remove keepalived
+  include_tasks: keepalived.yaml
+  when: inventory_hostname in groups['loadbalancer']
