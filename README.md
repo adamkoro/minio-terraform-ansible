@@ -7,7 +7,6 @@ Create Minio cluster easly with Terraform and Ansible
 - Minio cluster: https://min.io/docs/minio/linux/operations/install-deploy-manage/deploy-minio-multi-node-multi-drive.html
 - Nginx config: https://min.io/docs/minio/linux/integrations/setup-nginx-proxy-with-minio.html
 
-
 ## Requirements
 
 - Terraform
@@ -15,30 +14,32 @@ Create Minio cluster easly with Terraform and Ansible
 
 ## How to use
 
-- Clone this repository
+- Clone this repository.
 
 ### Install
 
 #### Terraform
+
 - Create a file called `terraform.tfvars` and fill it with your data:
 
 ``` bash
 cd terraform
 cp terraform.tfvars.example terraform.tfvars
 ```
-- Run **terraform init** to initialize terraform
+
+- Run **terraform init** to initialize terraform.
 
 ```bash
 terraform init
 ```
 
-- Run **terraform plan** to plan the infrastructure
+- Run **terraform plan** to plan the infrastructure.
 
 ```bash
 terraform plan
 ```
 
-- Run **terraform apply** to create the infrastructure
+- Run **terraform apply** to create the infrastructure.
 
 ```bash
 terraform apply
@@ -46,28 +47,28 @@ terraform apply
 
 #### Ansible
 
-- Run **ansible-playbook** to install Minio and Nginx on the servers
-- Edit the **inventory/hosts.ini** file to match your infrastructure
+- Run **ansible-playbook** to install Minio, Keepalived and Haproxy or Nginx on the servers.
+
+##### Cluster playbook
 
 ```bash
-cd ansible
-cp inventory/hosts.ini.example inventory/hosts.ini
+cd ansible/cluster
+cp inventory-example.yaml inventory.yaml
 ```
 
-- Copy the **inventory/group_vars/all.yml.example** to **inventory/group_vars/all.yml** and fill it with your data:
+**Edit that yaml** file with your data
+
+- Run **ansible-playbook** to install Minio and Nginx on the servers.
 
 ``` bash
-cp inventory/group_vars/all.yml.example inventory/group_vars/all.yml
-```
-- Run **ansible-playbook** to install Minio and Nginx on the servers
-``` bash
-ansible-playbook -i inventory/hosts.ini install.yml
+ansible-playbook -i inventory.yaml playbooks/install.yml
 ```
 
 ### Destroy
 
 #### Terraform
-- Run **terraform destroy** to destroy the infrastructure
+
+- Run **terraform destroy** to destroy the infrastructure.
 
 ```bash
 cd terraform
@@ -76,9 +77,9 @@ terraform destroy
 
 #### Ansible
 
-- Run **ansible-playbook** to uninstall Minio from the servers. **ONLY MINIO**
+- Run **ansible-playbook** to uninstall installed apps and configs from the servers.
 
 ``` bash
-cd ansible
-ansible-playbook -i inventory/hosts.ini delete.yml
+cd ansible/cluster
+ansible-playbook -i inventory.yaml playbooks/reset.yml
 ```
