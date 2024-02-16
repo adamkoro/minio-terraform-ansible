@@ -4,3 +4,4 @@ terraform.tfstate*
 terraform.tfvars
 *longhorn*
 files
+inventory.yaml
