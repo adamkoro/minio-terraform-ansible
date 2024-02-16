@@ -1,0 +1,41 @@
+---
+# Install keepalived
+- name: Install required packages
+  community.general.zypper:
+    name:
+      - keepalived
+    state: present
+    disable_recommends: false
+
+# Copy keepalived config
+- name: Copy keepalived config
+  ansible.builtin.template:
+    src: "keepalived.conf.j2"
+    dest: "/etc/keepalived/keepalived.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  register: keepalived_config
+
+# Enable and start keepalived
+- name: Start and enable keepalived service
+  ansible.builtin.systemd:
+    name: keepalived
+    state: started
+    enabled: true
+
+# Restart keepalived service
+- name: Restart keepalived service
+  ansible.builtin.systemd:
+    name: keepalived
+    state: restarted
+    enabled: true
+  when: keepalived_config is changed
+
+# Check keepalived vip address
+- name: Check keepalived vip
+  wait_for:
+    host: "{{ keepalived_vip_address.split('/')[0] }}"
+    state: started
+    timeout: 5
+
