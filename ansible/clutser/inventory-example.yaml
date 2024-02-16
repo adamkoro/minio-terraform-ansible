@@ -1,0 +1,36 @@
+all:
+  children:
+    loadbalancer:
+      hosts:
+        192.168.1.51:
+        192.168.1.52:
+        192.168.1.53:
+    minio:
+      hosts:
+        192.168.1.54:
+        192.168.1.55:
+        192.168.1.56:
+  vars:
+    # Ansbile settings
+    ansible_ssh_private_key_file: "~/.ssh/user"
+    ansible_port: 22
+    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+    ansible_user: "user"
+    # Keepalived settings
+    keepalived_interface: "eth0"
+    keepalived_vip_address: "192.168.1.50/32"
+    # Haproxy or Nginx settings
+    # uncomment what you need and comment out the other one
+    haproxy: true
+    #nginx: true
+    # Minio settings
+    minio_download_url: "https://dl.min.io/server/minio/release/linux-amd64"
+    minio_binary_file: "minio.RELEASE.2024-02-14T21-36-02Z"
+    minio_admin_username: "user"
+    minio_admin_password: "user"
+    minio_url: "http://minio.domain.local"
+    minio_console_url: "http://minio-console.domain.local"
+    minio_console_port: 9001
+    minio_data_path: /mnt/data
+    minio_host_prefix: minio
+    minio_host_suffix: domain.local
