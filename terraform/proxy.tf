@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "proxy" {
     scsihw      = "virtio-scsi-single"
     full_clone  = true
     bootdisk    = "scsi0"
-    startup     = "order=1"
+    startup     = "order=0"
     clone       = var.proxmox_template_name
     os_type = "cloud-init"
 disks {
