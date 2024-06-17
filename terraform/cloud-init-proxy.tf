@@ -1,5 +1,5 @@
 resource "proxmox_cloud_init_disk" "proxy_ci" {
-  name     = "${var.proxmox_proxy_vm_name}-cp-${count.index + 1}-cloud-init"
+  name     = "${var.proxmox_proxy_vm_name}-${count.index + 1}-cloud-init"
   pve_node = var.proxmox_target_node
   storage  = var.proxmox_cloudinit_pool
   count    = var.proxy_vm_count
@@ -129,6 +129,6 @@ network:
       routes:
         - to: 0.0.0.0/0
           via: ${var.cloud_init_gateway1}
-          metric: 100s
+          metric: 100
 EOT
 }
