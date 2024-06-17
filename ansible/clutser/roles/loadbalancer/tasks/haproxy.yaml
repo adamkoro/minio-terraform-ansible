@@ -6,6 +6,15 @@
       - haproxy
     state: present
     disable_recommends: false
+  when: ansible_facts['distribution'] == "openSUSE Leap" or ansible_facts['distribution'] == "SLES"
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - haproxy
+    state: present
+    install_recommends: true
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 # Copy haproxy config
 - name: Copy haproxy config

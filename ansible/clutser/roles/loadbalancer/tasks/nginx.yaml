@@ -2,11 +2,19 @@
 # Install nginx
 - name: Install packages
   community.general.zypper:
-    name: "{{ item }}"
+    name:
+      - nginx
     state: present
     disable_recommends: false
-  loop:
-    - nginx
+  when: ansible_facts['distribution'] == "openSUSE Leap" or ansible_facts['distribution'] == "SLES"
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - nginx
+    state: present
+    install_recommends: true
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 # Copy nginx config
 - name: Copy nginx config
