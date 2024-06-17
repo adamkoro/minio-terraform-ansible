@@ -3,19 +3,25 @@ resource "proxmox_vm_qemu" "minio" {
     target_node = var.proxmox_target_node
     name        = "${var.proxmox_minio_vm_name}-${count.index + 1}"
     vmid        = "200${count.index + 4}"
-    cores       = 4
+    cores       = 2
     sockets     = 1
     cpu         = "host"
-    memory      = 2048
+    memory      = 512
     agent       = 1
     onboot      = true
     scsihw      = "virtio-scsi-single"
-    full_clone  = true
-    bootdisk    = "scsi0"
+    full_clone  = var.proxmox_vm_full_clone
     startup     = "order=0"
+    bootdisk    = "scsi0"
     clone       = var.proxmox_template_name
-    os_type = "cloud-init"
 disks {
+        sata {
+            sata0 {
+                cdrom {
+                    iso = proxmox_cloud_init_disk.minio_ci[count.index].id
+                }
+            }
+        }
         scsi {
             # Root
             scsi0 {
@@ -50,25 +56,18 @@ disks {
         }
         
     }
-    # Cloud-init
-    cloudinit_cdrom_storage = var.proxmox_cloudinit_pool
-    cicustom = "user=${var.proxmox_cloudinit_pool}:snippets/cloud_init_${var.proxmox_minio_vm_name}-${count.index + 1}.yml"
-    # Network
     network {
         bridge = "vmbr0"
         model  = "virtio"
     }
-    ipconfig0 = "ip=${var.cloud_init_ip_pool}${count.index + var.cloud_init_minio_ip_increase}/${var.cloud_init_netmask},gw=${var.cloud_init_gateway}"
-    # Check if vm ssh port is open
-    provisioner "local-exec" {
-        command = "while ! nc -q0 ${var.cloud_init_ip_pool}${count.index + var.cloud_init_minio_ip_increase} 22 < /dev/null > /dev/null 2>&1; do sleep 10;done"
+    network {
+        bridge = "vmbr1"
+        model  = "virtio"
     }
-    # Check if python is installed -- NOT NEEDED
-    #provisioner "local-exec" {
-    #    command = "while ! ANSIBLE_HOST_KEY_CHECKING=False ansible -i '${var.cloud_init_ip_pool}${count.index + var.cloud_init_ip_increase},' all -m ansible.builtin.shell -a 'command -v python' --private-key ${var.ansbile_private_key} -e ansible_user=${var.cloud_init_username}; do sleep 10;done"
-    #}
-    # Run ansible playbook
     provisioner "local-exec" {
-        command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook minio-setup.yaml -i '${var.cloud_init_ip_pool}${count.index + var.cloud_init_minio_ip_increase},' --private-key ${var.ansbile_private_key} -e ansible_user=${var.cloud_init_username}"
+        command = "while ! nc -q0 ${var.cloud_init_ip_pool0}${count.index + var.cloud_init_minio_ip_increase} 22 < /dev/null > /dev/null 2>&1; do sleep 10;done"
+    }
+    provisioner "local-exec" {
+        command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook minio-setup.yaml -i '${var.cloud_init_ip_pool0}${count.index + var.cloud_init_minio_ip_increase},' --private-key ${var.ansbile_private_key} -e ansible_user=${var.cloud_init_username}"
     }
 }

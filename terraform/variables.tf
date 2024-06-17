@@ -13,6 +13,10 @@ variable "proxmox_minio_vm_name" {
 variable "proxmox_proxy_vm_name" {
   description = "Name of VMs to create"
 }
+variable "proxmox_vm_full_clone" {
+  type = bool
+  description = "Full or linked clone"
+}
 variable "proxmox_template_name" {
   type        = string
   description = "Proxmox VM template"
@@ -39,11 +43,19 @@ variable "cloud_init_netmask" {
   type        = string
   description = "Netmask for cloud-init"
 }
-variable "cloud_init_gateway" {
+variable "cloud_init_gateway0" {
   type        = string
   description = "Gateway for cloud-init"
 }
-variable "cloud_init_ip_pool" {
+variable "cloud_init_ip_pool0" {
+  type        = string
+  description = "IP pool for cloud-init"
+}
+variable "cloud_init_gateway1" {
+  type        = string
+  description = "Gateway for cloud-init"
+}
+variable "cloud_init_ip_pool1" {
   type        = string
   description = "IP pool for cloud-init"
 }
@@ -104,11 +116,7 @@ variable "proxmox_cloudinit_pool" {
   description = "Proxmox cloud-init pool"
   
 }
-variable "cloudinit_host_pool_path" {
-  type = string
-  description = "Host pool path for cloud-init snippet"
-  
-}
+
 variable "proxmox_user" {
   type        = string
   description = "Proxmox user"
