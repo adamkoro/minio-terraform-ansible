@@ -3,10 +3,10 @@ resource "proxmox_vm_qemu" "minio" {
     target_node = var.proxmox_target_node
     name        = "${var.proxmox_minio_vm_name}-${count.index + 1}"
     vmid        = "200${count.index + 4}"
-    cores       = 2
+    cores       = 4
     sockets     = 1
     cpu         = "host"
-    memory      = 512
+    memory      = 1024
     agent       = 1
     onboot      = true
     scsihw      = "virtio-scsi-single"
