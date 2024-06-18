@@ -26,21 +26,21 @@ defaults
     timeout client     5s
     timeout server    10s
 
-listen stats
-    bind 0.0.0.0:80
+frontend http_frontend
+    bind *:80
+    mode http
+    redirect scheme https code 301 if !{ ssl_fc }
+
+frontend https_frontend
+    bind *:443 ssl crt {{ haproxy_cert_path }}
+    mode tcp
+    acl host_minio req.ssl_sni -i https://{{ haproxy_url }}
+    acl host_minio_console req.ssl_sni -i https://{{ haproxy_console_url }}
+    use_backend minio_backend if host_minio
+    use_backend minio_console_backend if host_minio_console
     stats enable
-    stats uri     /
+    stats uri /stats
     stats refresh 5s
-
-frontend minio_frontend
-    bind 0.0.0.0:9000
-    mode tcp
-    default_backend minio_backend
-
-frontend minio_console_frontend
-    bind 0.0.0.0:9001
-    mode tcp
-    default_backend minio_console_backend
 
 backend minio_backend
     mode tcp

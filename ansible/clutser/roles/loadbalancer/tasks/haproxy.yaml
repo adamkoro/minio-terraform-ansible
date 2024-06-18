@@ -26,6 +26,13 @@
     mode: '0640'
   register: haproxy_config_file
 
+# Copy haproxy cert
+- name: "Copy haproxy cert"
+  ansible.builtin.copy:
+    content: "{{ haproxy_cert }}"
+    dest: "{{ haproxy_cert_path }}"
+    mode: '0644'
+
 # Check haproxy config file
 - name: Check HAProxy configuration
   command: haproxy -f /etc/haproxy/haproxy.cfg -c
