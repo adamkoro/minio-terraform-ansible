@@ -2,10 +2,14 @@
   become: true
   hosts: all
   vars:
-    filesystem_type: ext4
     swap_disk: /dev/vda
-    minio_disk: /dev/vdb
-    minio_disk_mount: /mnt/data
+    minio_disks:
+      - { disk: "/dev/vdb", filesystem_type: "xfs", mount: "/mnt/minio1" }
+      - { disk: "/dev/vdc", filesystem_type: "xfs", mount: "/mnt/minio2" }
+      - { disk: "/dev/vdd", filesystem_type: "xfs", mount: "/mnt/minio3" }
+      - { disk: "/dev/vde", filesystem_type: "xfs", mount: "/mnt/minio4" }
+      - { disk: "/dev/vdf", filesystem_type: "xfs", mount: "/mnt/minio5" }
+      - { disk: "/dev/vdg", filesystem_type: "xfs", mount: "/mnt/minio6" }
   tasks:
     ###############
     ## swap disk
@@ -28,48 +32,65 @@
       register: uuid_swap
       changed_when: false
 
-    ###############
-    ## minio disk
-    ###############
-    - name: Check if minio disk is formatted
-      ansible.builtin.command: blkid -s TYPE -o value "{{ minio_disk }}"
-      register: fs_minio
-      changed_when: false
-      failed_when: false
-
-    - name: Create a filesystem for minio
-      community.general.filesystem:
-        dev: "{{ minio_disk }}"
-        fstype: "{{ filesystem_type }}"
-        force: true
-      when: fs_minio.stdout is defined and (fs_minio.stdout != filesystem_type or not fs_minio.stdout)
-
-    - name: Get minio disk UUID
-      ansible.builtin.command: blkid -s UUID -o value {{ minio_disk }}
-      register: uuid_minio
-      changed_when: false
-
-    ###############
-    ## mount created disks
-    ###############
     - name: Add disks to fstab
       ansible.builtin.blockinfile:
         path: /etc/fstab
         state: present
         block: |
           UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
-          UUID={{ uuid_minio.stdout }} {{ minio_disk_mount }} {{ filesystem_type }} defaults 0 0
       when: uuid_swap.stdout is defined
+
+    ###############
+    ## minio disk
+    ###############
+    - name: Check if minio disk is formatted
+      ansible.builtin.command: blkid -s TYPE -o value "{{ item.disk }}"
+      register: fs_minio
+      changed_when: false
+      failed_when: false
+      loop: "{{ minio_disks }}"
+      loop_control:
+        loop_var: item
+
+    - name: Create a filesystem for minio
+      community.general.filesystem:
+        dev: "{{ item.disk }}"
+        fstype: "{{ item.filesystem_type }}"
+        force: true
+      when: fs_minio.results[ansible_loop.index0] is defined and (fs_minio.results[ansible_loop.index0].stdout != item.filesystem_type or not fs_minio.results[ansible_loop.index0].stdout)
+      loop: "{{ minio_disks }}"
+      loop_control:
+        loop_var: item
+
+    - name: Get minio disk UUID
+      ansible.builtin.command: blkid -s UUID -o value {{ item.disk }}
+      register: uuid_minio
+      changed_when: false
+      loop: "{{ minio_disks }}"
+      loop_control:
+        loop_var: item
+
+    - name: Add disks to fstab
+      ansible.builtin.blockinfile:
+        path: /etc/fstab
+        state: present
+        block: |
+          UUID={{ uuid_minio.results[itemloop.index0].stdout }} {{ item.mount }} {{ item.filesystem_type }} defaults 0 0
+      when: uuid_minio.results[itemloop.index0].stdout is defined
+      loop: "{{ minio_disks }}"
+      loop_control:
+        loop_var: item
 
     - name: Create directory for mounts
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: "{{ item.mount }}"
         state: directory
         owner: root
         group: root
-        mode: "0644"
-      loop:
-        - "{{ minio_disk_mount }}"
+        mode: "0755"
+      loop: "{{ minio_disks }}"
+      loop_control:
+        loop_var: item
 
     - name: Enable swap
       ansible.builtin.command: swapon -a

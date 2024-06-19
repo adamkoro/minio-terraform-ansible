@@ -6,7 +6,7 @@ resource "proxmox_vm_qemu" "minio" {
     cores       = 4
     sockets     = 1
     cpu         = "host"
-    memory      = 1024
+    memory      = 6144
     agent       = 1
     onboot      = true
     scsihw      = "virtio-scsi-single"
@@ -44,10 +44,55 @@ disks {
                     asyncio = "native"
                 }
             }
-            # minio
+            # minio1
             virtio1 {
                 disk {
-                    storage = var.proxmox_minio_pool
+                    storage = "wd-1"
+                    size = var.proxmox_minio_pool_size
+                    iothread = true
+                    asyncio = "native"
+                }
+            }
+            # minio2
+            virtio2 {
+                disk {
+                    storage = "wd-2"
+                    size = var.proxmox_minio_pool_size
+                    iothread = true
+                    asyncio = "native"
+                }
+            }
+            # minio3
+            virtio3 {
+                disk {
+                    storage = "toshiba-1"
+                    size = var.proxmox_minio_pool_size
+                    iothread = true
+                    asyncio = "native"
+                }
+            }
+            # minio4
+            virtio4 {
+                disk {
+                    storage = "wd-1"
+                    size = var.proxmox_minio_pool_size
+                    iothread = true
+                    asyncio = "native"
+                }
+            }
+            # minio5
+            virtio5 {
+                disk {
+                    storage = "wd-2"
+                    size = var.proxmox_minio_pool_size
+                    iothread = true
+                    asyncio = "native"
+                }
+            }
+            # minio6
+            virtio6 {
+                disk {
+                    storage = "toshiba-1"
                     size = var.proxmox_minio_pool_size
                     iothread = true
                     asyncio = "native"
