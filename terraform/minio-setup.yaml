@@ -33,11 +33,10 @@
       changed_when: false
 
     - name: Add disks to fstab
-      ansible.builtin.blockinfile:
+      ansible.builtin.lineinfile:
         path: /etc/fstab
         state: present
-        block: |
-          UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
+        line: UUID={{ uuid_swap.stdout }} swap swap defaults 0 0
       when: uuid_swap.stdout is defined
 
     ###############
@@ -57,10 +56,11 @@
         dev: "{{ item.disk }}"
         fstype: "{{ item.filesystem_type }}"
         force: true
-      when: fs_minio.results[ansible_loop.index0] is defined and (fs_minio.results[ansible_loop.index0].stdout != item.filesystem_type or not fs_minio.results[ansible_loop.index0].stdout)
+      when: fs_minio.results[item_index].stdout is defined and(fs_minio.results[item_index].stdout != item.filesystem_type or not fs_minio.results[item_index].stdout)
       loop: "{{ minio_disks }}"
       loop_control:
         loop_var: item
+        index_var: item_index
 
     - name: Get minio disk UUID
       ansible.builtin.command: blkid -s UUID -o value {{ item.disk }}
@@ -71,15 +71,15 @@
         loop_var: item
 
     - name: Add disks to fstab
-      ansible.builtin.blockinfile:
+      ansible.builtin.lineinfile:
         path: /etc/fstab
         state: present
-        block: |
-          UUID={{ uuid_minio.results[itemloop.index0].stdout }} {{ item.mount }} {{ item.filesystem_type }} defaults 0 0
-      when: uuid_minio.results[itemloop.index0].stdout is defined
+        line: UUID={{ uuid_minio.results[item_index].stdout }} {{ item.mount }} {{ item.filesystem_type }} defaults 0 0
+      when: uuid_minio.results[item_index].stdout is defined
       loop: "{{ minio_disks }}"
       loop_control:
         loop_var: item
+        index_var: item_index
 
     - name: Create directory for mounts
       ansible.builtin.file:
