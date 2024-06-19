@@ -54,9 +54,16 @@
   when: haproxy_check.rc ==  0 and haproxy_config_file is changed
 
 # Check haproxy access
-- name: Check haproxy port access
+- name: Check haproxy minio port access
   wait_for:
     host: "{{ keepalived_vip_address.split('/')[0] }}"
-    port: 80
+    port: 9000
+    state: started
+    timeout: 5
+
+- name: Check haproxy minio console port access
+  wait_for:
+    host: "{{ keepalived_vip_address.split('/')[0] }}"
+    port: 9001
     state: started
     timeout: 5

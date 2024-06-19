@@ -20,7 +20,6 @@ defaults
     option  dontlognull
     option  socket-stats
     option  forwardfor
-    option  httplog
     retries 3
     option  redispatch
     timeout connect 10s
@@ -33,22 +32,20 @@ frontend stats_frontend
     stats enable
     stats uri /
     stats refresh 5s
+    
 
-frontend http_frontend
-    bind 0.0.0.0:80
-    mode http
-    redirect scheme https code 301 if !{ ssl_fc }
+frontend https_minio_frontend
+    bind 0.0.0.0:9000 ssl crt {{ haproxy_cert_path }}
+    mode tcp
+    use_backend minio_backend
 
-frontend https_frontend
-    bind 0.0.0.0:443 ssl crt {{ haproxy_cert_path }}
-    mode http
-    tcp-request inspect-delay 5s
-    tcp-request content accept if { req_ssl_hello_type 1 }
-    use_backend minio_console_backend if { req.hdr(host) -i {{ haproxy_console_url }} }
-    default_backend minio_backend
+frontend https_minio_console_frontend
+    bind 0.0.0.0:9001 ssl crt {{ haproxy_cert_path }}
+    mode tcp
+    use_backend minio_console_backend
 
 backend minio_backend
-    mode http
+    mode tcp
     balance leastconn
 {% for host in groups['minio'] %}
 {% set minio_number = loop.index %}
@@ -57,7 +54,7 @@ backend minio_backend
 {% endfor %}
 
 backend minio_console_backend
-    mode http
+    mode tcp
     balance leastconn
 {% for host in groups['minio'] %}
 {% set minio_number = loop.index %}
